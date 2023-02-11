@@ -52,14 +52,25 @@ node ./src/delete.js [openApi]
 ![](assets/v2-295a0ead6bb22aa51fc2c447cf24e082_1440w.webp)
 
 2. 点击右上角“编辑”，选择你所有要同步的笔记和划线内容。然后点左下角的“复制”选项。
-3. copy 到项目根目录下的 `weixin.txt` 文件中。
-5. 运行脚本
+
+## 导入到 Memos
+
+1. 下载本项目
+
+```bash
+git clone https://github.com/JakeLaoyu/memos-import-from-flomo.git
+cd memos-import-from-flomo
+pnpm install
+```
+
+2. copy 到项目根目录下的 `weixin.txt` 文件中。
+3. 运行脚本
 
 ```bash
 node ./src/weixin.js [openApi] ./weixin.txt
 ```
 
-6. 打开 Memos 查看效果，如果不满意可以删除数据。原理同 flomo 同步介绍中的一致。
+4. 打开 Memos 查看效果，如果不满意可以删除数据。原理同 flomo 同步介绍中的一致。
    
 ```bash
 node ./src/delete.js [openApi]
