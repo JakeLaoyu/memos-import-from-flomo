@@ -35,3 +35,13 @@ exports.sendMemo = async (memo) => {
     return res;
   });
 };
+
+exports.deleteMemo = async (memoId) => {
+  return axios({
+    method: "delete",
+    url: getRequestUrl(`/api/memo/${memoId}?openId=${getOpenId()}`),
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+  });
+};

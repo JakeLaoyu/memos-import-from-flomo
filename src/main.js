@@ -53,7 +53,6 @@ async function uploadFileHandler() {
 
     await mergePromise(uploadFilePromiseArr).then((res) => {
       memo.resourceIdList = res.map((item) => item.data.id);
-      console.log("memo.resourceIdList", memo.resourceIdList);
     });
   }
 }
@@ -62,13 +61,11 @@ async function sendMemoHandler() {
   const sendMemoPromiseArr = [];
 
   for (const memo of memoArr) {
-    console.log(memo.content);
     sendMemoPromiseArr.unshift(() =>
       sendMemo({
         content: memo.content,
         resourceIdList: memo.resourceIdList,
       }).then((res) => {
-        console.log("sended", res.data.data.id);
         sendedMemoIds.push(res.data.data.id);
       })
     );
