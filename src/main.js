@@ -18,7 +18,10 @@ for (const memo of memos) {
   $(memo)
     .find(".content p")
     .each((index, p) => {
-      const text = $(p).text();
+      let text = $(p).html();
+
+      text = text.replaceAll("<strong>", "**").replaceAll("</strong>", "**");
+
       content += `${content ? "\n" : ""}${text}`;
     }, "");
 
