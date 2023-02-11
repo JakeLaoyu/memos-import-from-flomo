@@ -1,0 +1,27 @@
+{
+  "name": "memos-import-from-flomo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "run": "node main.js http://localhost:5230/api/memo?openId=76846cc0-c32e-4b99-a61e-27f9ca2f724e ./flomo/index.html",
+    "lint": "eslint ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.3.2",
+    "cheerio": "1.0.0-rc.12",
+    "form-data": "^4.0.0",
+    "fs-extra": "^11.1.0",
+    "mime": "^3.0.0",
+    "url-parse": "^1.5.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.12",
+    "@babel/eslint-parser": "^7.19.1",
+    "eslint": "^8.34.0",
+    "eslint-config-prettier": "^8.6.0"
+  }
+}
