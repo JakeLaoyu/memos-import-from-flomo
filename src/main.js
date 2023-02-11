@@ -41,13 +41,17 @@ memoArr.sort((a, b) => {
 });
 
 async function uploadFileHandler() {
+  console.log("======================= 上传资源 =======================");
   for (const memo of memoArr) {
     memoArr.resourceList = memoArr.resourceList || [];
     const uploadFilePromiseArr = [];
     if (memo.files.length) {
       for (const filePath of memo.files) {
         const fullPath = getFilePath(filePath);
-        uploadFilePromiseArr.push(() => uploadFile(fullPath));
+        uploadFilePromiseArr.push(() => {
+          console.log("开始上传", filePath);
+          return uploadFile(fullPath);
+        });
       }
     }
 
@@ -55,6 +59,8 @@ async function uploadFileHandler() {
       memo.resourceIdList = res.map((item) => item.data.id);
     });
   }
+
+  console.log("======================= 上传资源 end =======================");
 }
 
 async function sendMemoHandler() {
@@ -66,6 +72,7 @@ async function sendMemoHandler() {
         content: memo.content,
         resourceIdList: memo.resourceIdList,
       }).then((res) => {
+        console.log("success", res.data.data.content);
         sendedMemoIds.push(res.data.data.id);
       })
     );
