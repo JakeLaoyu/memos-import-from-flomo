@@ -1,4 +1,4 @@
-# Memos 导入 flomo 数据
+# Memos 导入数据
 
 此项目为 [Memos](https://github.com/usememos/memos) 的数据导入工具
 
