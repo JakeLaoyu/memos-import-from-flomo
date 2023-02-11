@@ -1,5 +1,7 @@
 # Memos 导入 flomo 数据
 
+此项目为 [Memos](https://github.com/usememos/memos) 的数据导入工具，可以将 flomo 的数据导入到 Memos。
+
 ## 导出 flomo 数据
 
 在 flomo 的[设置页面](https://v.flomoapp.com/mine?source=account)，点击导出 HTML 数据
