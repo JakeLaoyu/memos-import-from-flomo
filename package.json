@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "node main.js http://localhost:5230/api/memo?openId=76846cc0-c32e-4b99-a61e-27f9ca2f724e ./flomo/index.html",
+    "run": "node ./src/weixin.js http://localhost:5230/api/memo?openId=8deb3079-055b-48a1-a1e4-499ce493fa0c ./weixin.txt",
     "lint": "eslint ."
   },
   "keywords": [],

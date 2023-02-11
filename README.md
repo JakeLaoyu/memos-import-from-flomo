@@ -1,6 +1,11 @@
 # Memos 导入 flomo 数据
 
-此项目为 [Memos](https://github.com/usememos/memos) 的数据导入工具，可以将 flomo 的数据导入到 Memos。
+此项目为 [Memos](https://github.com/usememos/memos) 的数据导入工具
+
+- 支持 flomo 的数据导入到 Memos。
+- 支持 微信读书 的数据导入到 Memos。
+
+# flomo
 
 ## 导出 flomo 数据
 
@@ -36,6 +41,26 @@ node ./src/main.js [openApi] ./flomo/index.html
 
 执行完同步数据后如果不符合预期，可以执行下面的命令删除同步的数据。删除会读取同步完成写入到 `sendedIds.json` 文件数据，所以需要保证这个文件存在。
 
+```bash
+node ./src/delete.js [openApi]
+```
+
+# 微信读书
+## 导出微信读书数据
+
+1. 在微信读书软件中，点击“我”“笔记”，选中你要同步的书籍，例如：
+![](assets/v2-295a0ead6bb22aa51fc2c447cf24e082_1440w.webp)
+
+2. 点击右上角“编辑”，选择你所有要同步的笔记和划线内容。然后点左下角的“复制”选项。
+3. copy 到项目根目录下的 `weixin.txt` 文件中。
+5. 运行脚本
+
+```bash
+node ./src/weixin.js [openApi] ./weixin.txt
+```
+
+6. 打开 Memos 查看效果，如果不满意可以删除数据。原理同 flomo 同步介绍中的一致。
+   
 ```bash
 node ./src/delete.js [openApi]
 ```
