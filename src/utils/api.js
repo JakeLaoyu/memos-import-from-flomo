@@ -5,6 +5,8 @@ const axios = require("axios");
 const FormData = require("form-data");
 const { getRequestUrl, getOpenId, openApi } = require("./utils");
 
+const SLEEP = 1000;
+
 exports.uploadFile = async (filePath) => {
   const readFile = fs.readFileSync(filePath);
 
@@ -30,7 +32,7 @@ exports.sendMemo = async (memo) => {
       "Content-Type": "application/json; charset=UTF-8",
     },
   }).then(async (res) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, SLEEP));
 
     return res;
   });
