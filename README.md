@@ -2,7 +2,7 @@
 
 ## 导出 flomo 数据
 
-在 flomo 的设置页面，点击导出 HTML 数据
+在 flomo 的[设置页面](https://v.flomoapp.com/mine?source=account)，点击导出 HTML 数据
 
 ![](assets/SCR-20230211-tbm.png)
 
