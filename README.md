@@ -32,7 +32,7 @@ pnpm install
 为了保证数据的顺序，上传间隔 1s。如果你的 flomo 数据量很大，可以修改 `src/utils/api.js` 中的 `SLEEP` 的值。
 
 ```bash
-node ./src/main.js [openApi] ./flomo/index.html
+node ./src/main.js openApi ./flomo/index.html
 ```
 
 同步完可以打开网站查看是否符合预期。如不符合预期请看下面删除数据的方法。
@@ -42,7 +42,7 @@ node ./src/main.js [openApi] ./flomo/index.html
 执行完同步数据后如果不符合预期，可以执行下面的命令删除同步的数据。删除会读取同步完成写入到 `sendedIds.json` 文件数据，所以需要保证这个文件存在。
 
 ```bash
-node ./src/delete.js [openApi]
+node ./src/delete.js openApi
 ```
 
 # 微信读书
@@ -67,11 +67,11 @@ pnpm install
 3. 运行脚本
 
 ```bash
-node ./src/weixin.js [openApi] ./weixin.txt
+node ./src/weixin.js openApi ./weixin.txt
 ```
 
 4. 打开 Memos 查看效果，如果不满意可以删除数据。原理同 flomo 同步介绍中的一致。
    
 ```bash
-node ./src/delete.js [openApi]
+node ./src/delete.js openApi
 ```
