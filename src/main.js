@@ -74,6 +74,7 @@ async function sendMemoHandler() {
       sendMemo({
         content: memo.content,
         resourceIdList: memo.resourceIdList,
+        createdTs: new Date(memo.time).getTime() / 1000,
       }).then((res) => {
         console.log("success", res.data.data.content);
         sendedMemoIds.push(res.data.data.id);
