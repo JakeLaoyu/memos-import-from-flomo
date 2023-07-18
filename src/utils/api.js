@@ -18,7 +18,7 @@ exports.uploadFile = async (filePath) => {
 
   return axios({
     method: "post",
-    url: getRequestUrl(`/api/resource/blob?openId=${getOpenId()}`),
+    url: getRequestUrl(`/api/v1/resource/blob?openId=${getOpenId()}`),
     data: formData,
   }).then((res) => res.data);
 };
@@ -41,7 +41,7 @@ exports.sendMemo = async (memo) => {
 exports.deleteMemo = async (memoId) => {
   return axios({
     method: "delete",
-    url: getRequestUrl(`/api/memo/${memoId}?openId=${getOpenId()}`),
+    url: getRequestUrl(`/api/v1/memo/${memoId}?openId=${getOpenId()}`),
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
     },

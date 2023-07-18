@@ -59,7 +59,7 @@ async function uploadFileHandler() {
     }
 
     await mergePromise(uploadFilePromiseArr).then((res) => {
-      memo.resourceIdList = res.map((item) => item.data.id);
+      memo.resourceIdList = res.map((item) => item.id);
     });
   }
 
@@ -76,8 +76,8 @@ async function sendMemoHandler() {
         resourceIdList: memo.resourceIdList,
         createdTs: new Date(memo.time).getTime() / 1000,
       }).then((res) => {
-        console.log("success", res.data.data.content);
-        sendedMemoIds.push(res.data.data.id);
+        console.log("success", res.data.content);
+        sendedMemoIds.push(res.data.id);
       })
     );
   }
