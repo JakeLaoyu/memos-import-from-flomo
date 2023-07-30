@@ -7,6 +7,12 @@ const { getRequestUrl, getOpenId, openApi } = require("./utils");
 
 const SLEEP = 1000;
 
+const getVersion = () => {
+  if (openApi.includes('/v1')) return '/v1';
+
+  return '';
+}
+
 exports.uploadFile = async (filePath) => {
   const readFile = fs.readFileSync(filePath);
 
@@ -18,7 +24,7 @@ exports.uploadFile = async (filePath) => {
 
   return axios({
     method: "post",
-    url: getRequestUrl(`/api/resource/blob?openId=${getOpenId()}`),
+    url: getRequestUrl(`/api${getVersion()}/resource/blob?openId=${getOpenId()}`),
     data: formData,
   }).then((res) => res.data);
 };
@@ -41,7 +47,7 @@ exports.sendMemo = async (memo) => {
 exports.deleteMemo = async (memoId) => {
   return axios({
     method: "delete",
-    url: getRequestUrl(`/api/memo/${memoId}?openId=${getOpenId()}`),
+    url: getRequestUrl(`/api${getVersion()}/memo/${memoId}?openId=${getOpenId()}`),
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
     },
