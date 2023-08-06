@@ -25,8 +25,6 @@ for (const memo of memos) {
       var turndownService = new TurndownService()
       text = turndownService.turndown(text)
 
-      console.log('text', text)
-
       content += `${content ? "\n" : ""}${text}`;
     }, "");
 
