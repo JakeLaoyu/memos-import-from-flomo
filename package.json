@@ -16,6 +16,7 @@
     "form-data": "^4.0.0",
     "fs-extra": "^11.1.0",
     "mime": "^3.0.0",
+    "turndown": "^7.1.2",
     "url-parse": "^1.5.10"
   },
   "devDependencies": {

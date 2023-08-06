@@ -1,5 +1,7 @@
 const fs = require("fs-extra");
 const cheerio = require("cheerio");
+var TurndownService = require('turndown')
+
 const { htmlPath, getFilePath, mergePromise } = require("./utils/utils");
 const { uploadFile, sendMemo } = require("./utils/api");
 
@@ -16,11 +18,14 @@ for (const memo of memos) {
   let files = [];
 
   $(memo)
-    .find(".content p")
-    .each((index, p) => {
-      let text = $(p).html();
+    .find(".content")
+    .each((index, html) => {
+      let text = $(html).html();
 
-      text = text.replaceAll("<strong>", "**").replaceAll("</strong>", "**");
+      var turndownService = new TurndownService()
+      text = turndownService.turndown(text)
+
+      console.log('text', text)
 
       content += `${content ? "\n" : ""}${text}`;
     }, "");
