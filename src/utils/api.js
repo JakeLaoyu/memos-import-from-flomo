@@ -44,6 +44,19 @@ exports.sendMemo = async (memo) => {
   });
 };
 
+exports.sendTag = async (tag) => {
+  return axios({
+    method: "post",
+    url: getRequestUrl(`/api${getVersion()}/tag?openId=${getOpenId()}`),
+    data: {
+      name: tag
+    },
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+  });
+}
+
 exports.deleteMemo = async (memoId) => {
   return axios({
     method: "delete",

@@ -3,7 +3,7 @@ const cheerio = require("cheerio");
 var TurndownService = require('turndown')
 
 const { htmlPath, getFilePath, mergePromise } = require("./utils/utils");
-const { uploadFile, sendMemo } = require("./utils/api");
+const { uploadFile, sendMemo, sendTag } = require("./utils/api");
 
 const sendedMemoIds = [];
 const memoArr = [];
@@ -15,6 +15,7 @@ const memos = $(".memo");
 for (const memo of memos) {
   const time = $(memo).find(".time").text();
   let content = "";
+  let tags = [];
   let files = [];
 
   $(memo)
@@ -28,6 +29,13 @@ for (const memo of memos) {
       content += `${content ? "\n" : ""}${text}`;
     }, "");
 
+  // 正则通过 #xxx 获取标签
+  const tagReg = /#(\S*)/g;
+  const tagMatch = content.match(tagReg);
+  if (tagMatch) {
+    tags = tagMatch.map((item) => item.replace("#", ""));
+  }
+
   $(memo)
     .find(".files img")
     .each((index, img) => {
@@ -39,6 +47,7 @@ for (const memo of memos) {
     time,
     content,
     files,
+    tags
   });
 }
 
@@ -83,6 +92,12 @@ async function sendMemoHandler() {
         sendedMemoIds.push(res?.data?.id || res?.data?.data?.id);
       })
     );
+
+    if (memo.tags.length) {
+      memo.tags.forEach(tag => {
+        sendMemoPromiseArr.unshift(() => sendTag(tag));
+      })
+    }
   }
 
   await mergePromise(sendMemoPromiseArr);
