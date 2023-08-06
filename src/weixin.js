@@ -1,6 +1,6 @@
 const fs = require("fs-extra");
 const { htmlPath, getFilePath, mergePromise } = require("./utils/utils");
-const { sendMemo } = require("./utils/api");
+const { sendMemo, sendTag } = require("./utils/api");
 
 const contentParse = {
   bookInfo: [],
@@ -67,6 +67,10 @@ for (const chapter of contentParse.chapterInfo) {
             return res;
           });
         });
+
+        sendMemoPromiseArr.push(() => {
+          return sendTag(tag.replace("#", ""))
+        })
       }
 
       curContent = [];
