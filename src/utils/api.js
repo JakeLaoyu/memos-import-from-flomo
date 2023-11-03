@@ -7,12 +7,11 @@ const { getRequestUrl, getAccessToken, openApi } = require("./utils");
 
 const SLEEP = 1000;
 
-('   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6InYxIiwidHlwIjoiSldUIn0.eyJuYW1lIjoibGlueHVhbiIsImlzcyI6Im1lbW9zIiwic3ViIjoiMSIsImF1ZCI6WyJ1c2VyLmFjY2Vzcy10b2tlbiJdLCJleHAiOjE2OTg5NDc1NjEsImlhdCI6MTY5ODkxODc2MX0.B2ZLB0ozSIxYcR9J_TqWnS4H94jFAuYYzROo08_Yp_M');
 default_header = {
   Authorization: `Bearer ${getAccessToken()}`,
 };
 const getVersion = () => {
-    // XXX 不清楚v1 v2的区别
+  // XXX 不清楚v1 v2的区别
   if (openApi.includes("/v2")) return "/v2";
   return "/v1";
 };
