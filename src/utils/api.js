@@ -3,15 +3,18 @@ const path = require("path");
 const mime = require("mime");
 const axios = require("axios");
 const FormData = require("form-data");
-const { getRequestUrl, getOpenId, openApi } = require("./utils");
+const { getRequestUrl, getAccessToken, openApi } = require("./utils");
 
 const SLEEP = 1000;
 
+default_header = {
+  Authorization: `Bearer ${getAccessToken()}`,
+};
 const getVersion = () => {
-  if (openApi.includes('/v1')) return '/v1';
-
-  return '';
-}
+  // XXX 不清楚v1 v2的区别
+  if (openApi.includes("/v2")) return "/v2";
+  return "/v1";
+};
 
 exports.uploadFile = async (filePath) => {
   const readFile = fs.readFileSync(filePath);
@@ -24,17 +27,19 @@ exports.uploadFile = async (filePath) => {
 
   return axios({
     method: "post",
-    url: getRequestUrl(`/api${getVersion()}/resource/blob?openId=${getOpenId()}`),
+    url: getRequestUrl(`/api${getVersion()}/resource/blob`),
     data: formData,
+    headers: default_header,
   }).then((res) => res.data);
 };
 
 exports.sendMemo = async (memo) => {
   return axios({
     method: "post",
-    url: openApi,
+    url: getRequestUrl(`/api${getVersion()}/memo`),
     data: memo,
     headers: {
+      ...default_header,
       "Content-Type": "application/json; charset=UTF-8",
     },
   }).then(async (res) => {
@@ -47,21 +52,23 @@ exports.sendMemo = async (memo) => {
 exports.sendTag = async (tag) => {
   return axios({
     method: "post",
-    url: getRequestUrl(`/api${getVersion()}/tag?openId=${getOpenId()}`),
+    url: getRequestUrl(`/api${getVersion()}/tag`),
     data: {
-      name: tag
+      name: tag,
     },
     headers: {
+      ...default_header,
       "Content-Type": "application/json; charset=UTF-8",
     },
   });
-}
+};
 
 exports.deleteMemo = async (memoId) => {
   return axios({
     method: "delete",
-    url: getRequestUrl(`/api${getVersion()}/memo/${memoId}?openId=${getOpenId()}`),
+    url: getRequestUrl(`/api${getVersion()}/memo/${memoId}`),
     headers: {
+      ...default_header,
       "Content-Type": "application/json; charset=UTF-8",
     },
   });

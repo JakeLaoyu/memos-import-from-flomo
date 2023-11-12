@@ -1,6 +1,6 @@
 const fs = require("fs-extra");
 const cheerio = require("cheerio");
-var TurndownService = require('turndown')
+var TurndownService = require("turndown");
 
 const { htmlPath, getFilePath, mergePromise } = require("./utils/utils");
 const { uploadFile, sendMemo, sendTag } = require("./utils/api");
@@ -23,8 +23,8 @@ for (const memo of memos) {
     .each((index, html) => {
       let text = $(html).html();
 
-      var turndownService = new TurndownService()
-      text = turndownService.turndown(text)
+      var turndownService = new TurndownService();
+      text = turndownService.turndown(text);
 
       content += `${content ? "\n" : ""}${text}`;
     }, "");
@@ -47,7 +47,7 @@ for (const memo of memos) {
     time,
     content,
     files,
-    tags
+    tags,
   });
 }
 
@@ -94,9 +94,9 @@ async function sendMemoHandler() {
     );
 
     if (memo.tags.length) {
-      memo.tags.forEach(tag => {
+      memo.tags.forEach((tag) => {
         sendMemoPromiseArr.unshift(() => sendTag(tag));
-      })
+      });
     }
   }
 

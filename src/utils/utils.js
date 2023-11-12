@@ -1,16 +1,13 @@
 const path = require("path");
 const parse = require("url-parse");
 
-const [, , openApi, htmlPath] = process.argv;
+const [, , openApi, accessToken, htmlPath] = process.argv;
 
 exports.openApi = openApi;
 exports.htmlPath = htmlPath;
-
-exports.getOpenId = () => {
-  const { query } = parse(openApi);
-  const parseQuery = parse.qs.parse(query);
-
-  return parseQuery.openId;
+exports.accessToken = accessToken;
+exports.getAccessToken = () => {
+    return accessToken;
 };
 
 exports.getRequestUrl = (path = "") => {
