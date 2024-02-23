@@ -31,7 +31,7 @@ pnpm install
 
 3. 运行脚本
 
-为了保证数据的顺序，上传间隔 1s。如果你的 flomo 数据量很大，可以修改 `src/utils/api.js` 中的 `SLEEP` 的值。
+为了保证数据的顺序，上传间隔 1s。如果你的 flomo 数据量很大，可以修改 `src/utils/api.js` 中的 `SLEEP` 的值，如果过低可能会出发 `429` 限流错误码。
 
 ```bash
 node ./src/main.js <your-api-host> <your-access-token> ./flomo/index.html
