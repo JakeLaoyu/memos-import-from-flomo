@@ -68,7 +68,7 @@ for (const chapter of contentParse.chapterInfo) {
             return await sendMemo({
               content: `${content}\n\n章节: ${chapterTitle}\n\n${tag}`,
             }).then((res) => {
-              console.log(chalk.green("success", res.data.data.content));
+              console.log(chalk.green("success"), res.data.data.content);
               return res;
             });
           } catch (error) {
