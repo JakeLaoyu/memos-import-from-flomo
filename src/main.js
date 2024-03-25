@@ -33,7 +33,7 @@ for (const memo of memos) {
   const tagReg = /#(\S*)/g;
   const tagMatch = content.match(tagReg);
   if (tagMatch) {
-    tags = tagMatch.map((item) => item.replace("#", ""));
+    tags = tagMatch.map((item) => item.replace("#", "")).filter(tag => !!tag);
   }
 
   $(memo)
