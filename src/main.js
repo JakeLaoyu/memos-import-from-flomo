@@ -1,9 +1,13 @@
 const fs = require("fs-extra");
 const cheerio = require("cheerio");
 var TurndownService = require("turndown");
+const chalk = require("chalk");
 
-const { htmlPath, getFilePath, mergePromise } = require("./utils/utils");
+const { htmlPath, getFilePath, mergePromise, errorTip } = require("./utils/utils");
 const { uploadFile, sendMemo, sendTag } = require("./utils/api");
+
+fs.removeSync("./memo.json");
+fs.removeSync("./sendedIds.json");
 
 const sendedMemoIds = [];
 const memoArr = [];
@@ -56,7 +60,7 @@ memoArr.sort((a, b) => {
 });
 
 async function uploadFileHandler() {
-  console.log("======================= 上传资源 =======================");
+  console.log(chalk.green("======================= 上传资源 ======================="));
   for (const memo of memoArr) {
     memoArr.resourceList = memoArr.resourceList || [];
     const uploadFilePromiseArr = [];
@@ -64,7 +68,7 @@ async function uploadFileHandler() {
       for (const filePath of memo.files) {
         const fullPath = getFilePath(filePath);
         uploadFilePromiseArr.push(() => {
-          console.log("开始上传", filePath);
+          console.log(chalk.green("开始上传"), filePath);
           return uploadFile(fullPath);
         });
       }
@@ -75,35 +79,46 @@ async function uploadFileHandler() {
     });
   }
 
-  console.log("======================= 上传资源 end =======================");
+  console.log(chalk.green("======================= 上传资源 end ======================="));
 }
 
 async function sendMemoHandler() {
   const sendMemoPromiseArr = [];
 
+  fs.writeJSONSync("./memo.json", memoArr);
+
   for (const memo of memoArr) {
-    sendMemoPromiseArr.unshift(() =>
-      sendMemo({
-        content: memo.content,
-        resourceIdList: memo.resourceIdList,
-        createdTs: new Date(memo.time).getTime() / 1000,
-      }).then((res) => {
-        console.log("success", res?.data?.content || res?.data?.data?.content);
-        sendedMemoIds.push(res?.data?.id || res?.data?.data?.id);
-      })
-    );
+    sendMemoPromiseArr.unshift(async () => {
+      try {
+        return await sendMemo({
+          content: memo.content,
+          resourceIdList: memo.resourceIdList,
+          createdTs: new Date(memo.time).getTime() / 1000,
+        }).then((res) => {
+          console.log(chalk.green("success"), res?.data?.content || res?.data?.data?.content);
+          sendedMemoIds.push(res?.data?.id || res?.data?.data?.id);
+
+          fs.writeJSONSync("./sendedIds.json", sendedMemoIds);
+        });
+      } catch (error) {
+        errorTip(error);
+      }
+    });
 
     if (memo.tags.length) {
       memo.tags.forEach((tag) => {
-        sendMemoPromiseArr.unshift(() => sendTag(tag));
+        sendMemoPromiseArr.unshift(async () => {
+          try {
+            return await sendTag(tag);
+          } catch (error) {
+            errorTip(error);
+          }
+        });
       });
     }
   }
 
   await mergePromise(sendMemoPromiseArr);
-
-  fs.writeJSONSync("./memo.json", memoArr);
-  fs.writeJSONSync("./sendedIds.json", sendedMemoIds);
 }
 
 uploadFileHandler().then(sendMemoHandler);

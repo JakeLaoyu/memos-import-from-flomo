@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^1.6.0",
+    "chalk": "^4.1.2",
     "cheerio": "1.0.0-rc.12",
     "form-data": "^4.0.0",
     "fs-extra": "^11.1.0",
