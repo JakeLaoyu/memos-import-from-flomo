@@ -1,6 +1,10 @@
 const fs = require("fs-extra");
-const { htmlPath, getFilePath, mergePromise } = require("./utils/utils");
+const chalk = require("chalk");
+
+const { htmlPath, getFilePath, mergePromise, errorTip } = require("./utils/utils");
 const { sendMemo, sendTag } = require("./utils/api");
+
+fs.removeSync("./sendedIds.json");
 
 const contentParse = {
   bookInfo: [],
@@ -59,17 +63,25 @@ for (const chapter of contentParse.chapterInfo) {
     } else {
       if (curContent.length) {
         const content = curContent.join("\n");
-        sendMemoPromiseArr.push(() => {
-          return sendMemo({
-            content: `${content}\n\n章节: ${chapterTitle}\n\n${tag}`,
-          }).then((res) => {
-            console.log("success", res.data.data.content);
-            return res;
-          });
+        sendMemoPromiseArr.push(async () => {
+          try {
+            return await sendMemo({
+              content: `${content}\n\n章节: ${chapterTitle}\n\n${tag}`,
+            }).then((res) => {
+              console.log(chalk.green("success"), res.data.data.content);
+              return res;
+            });
+          } catch (error) {
+            errorTip(error);
+          }
         });
 
-        sendMemoPromiseArr.push(() => {
-          return sendTag(tag.replace("#", ""))
+        sendMemoPromiseArr.push(async () => {
+          try {
+            return await sendTag(tag.replace("#", ""));
+          } catch (error) {
+            errorTip(error);
+          }
         })
       }
 
