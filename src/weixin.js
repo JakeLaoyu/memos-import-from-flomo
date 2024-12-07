@@ -2,7 +2,7 @@ const fs = require("fs-extra");
 const chalk = require("chalk");
 
 const { htmlPath, getFilePath, mergePromise, errorTip } = require("./utils/utils");
-const { sendMemo, sendTag } = require("./utils/api");
+const { sendMemo } = require("./utils/api");
 
 fs.removeSync("./sendedIds.json");
 
@@ -68,21 +68,13 @@ for (const chapter of contentParse.chapterInfo) {
             return await sendMemo({
               content: `${content}\n\n章节: ${chapterTitle}\n\n${tag}`,
             }).then((res) => {
-              console.log(chalk.green("success"), res.data.data.content);
+              console.log(chalk.green("success"), res.data.content);
               return res;
             });
           } catch (error) {
             errorTip(error);
           }
         });
-
-        sendMemoPromiseArr.push(async () => {
-          try {
-            return await sendTag(tag.replace("#", ""));
-          } catch (error) {
-            errorTip(error);
-          }
-        })
       }
 
       curContent = [];
@@ -90,9 +82,9 @@ for (const chapter of contentParse.chapterInfo) {
   }
 }
 
-let sendedMemoIds = [];
+let sendedMemoNames = [];
 mergePromise(sendMemoPromiseArr).then((res) => {
-  sendedMemoIds = res.map((item) => item.data.data.id);
+  sendedMemoNames = res.map((item) => item.data.name);
 
-  fs.writeJSONSync("./sendedIds.json", sendedMemoIds);
+  fs.writeJSONSync("./sendedIds.json", sendedMemoNames);
 });

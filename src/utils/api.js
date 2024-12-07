@@ -11,7 +11,6 @@ default_header = {
   Authorization: `Bearer ${getAccessToken()}`,
 };
 const getVersion = () => {
-  // XXX 不清楚v1 v2的区别
   if (openApi.includes("/v2")) return "/v2";
   return "/v1";
 };
@@ -19,24 +18,28 @@ const getVersion = () => {
 exports.uploadFile = async (filePath) => {
   const readFile = fs.readFileSync(filePath);
 
-  const formData = new FormData();
-  formData.append("file", readFile, {
-    filename: path.basename(filePath),
-    contentType: mime.getType(filePath) || undefined,
-  });
+  // const formData = new FormData();
+  // formData.append("content", readFile, {
+  //   filename: path.basename(filePath),
+  //   type: mime.getType(filePath) || undefined,
+  // });
 
   return axios({
     method: "post",
-    url: getRequestUrl(`/api${getVersion()}/resource/blob`),
-    data: formData,
+    url: getRequestUrl(`/api${getVersion()}/resources`),
+    data: {
+      content: readFile.toString("base64"),
+      filename: path.basename(filePath),
+      type: mime.getType(filePath) || undefined
+    },
     headers: default_header,
-  }).then((res) => res.data);
+  }).then((res) => res.data)
 };
 
 exports.sendMemo = async (memo) => {
   return axios({
     method: "post",
-    url: getRequestUrl(`/api${getVersion()}/memo`),
+    url: getRequestUrl(`/api${getVersion()}/memos`),
     data: memo,
     headers: {
       ...default_header,
@@ -49,24 +52,26 @@ exports.sendMemo = async (memo) => {
   });
 };
 
-exports.sendTag = async (tag) => {
-  return axios({
-    method: "post",
-    url: getRequestUrl(`/api${getVersion()}/tag`),
+exports.setMemoResources = async (memoName, resources) => {
+  const options = {
+    method: "PATCH",
+    url: getRequestUrl(`/api${getVersion()}/${memoName}/resources`),
     data: {
-      name: tag,
+      resources: resources,
     },
     headers: {
       ...default_header,
       "Content-Type": "application/json; charset=UTF-8",
     },
-  });
+  };
+
+  return axios(options);
 };
 
-exports.deleteMemo = async (memoId) => {
+exports.deleteMemo = async (memoName) => {
   return axios({
     method: "delete",
-    url: getRequestUrl(`/api${getVersion()}/memo/${memoId}`),
+    url: getRequestUrl(`/api${getVersion()}/${memoName}`),
     headers: {
       ...default_header,
       "Content-Type": "application/json; charset=UTF-8",
