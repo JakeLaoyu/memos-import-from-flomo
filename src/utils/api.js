@@ -18,12 +18,6 @@ const getVersion = () => {
 exports.uploadFile = async (filePath) => {
   const readFile = fs.readFileSync(filePath);
 
-  // const formData = new FormData();
-  // formData.append("content", readFile, {
-  //   filename: path.basename(filePath),
-  //   type: mime.getType(filePath) || undefined,
-  // });
-
   return axios({
     method: "post",
     url: getRequestUrl(`/api${getVersion()}/resources`),
