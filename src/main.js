@@ -4,12 +4,12 @@ var TurndownService = require("turndown");
 const chalk = require("chalk");
 
 const { htmlPath, getFilePath, mergePromise, errorTip } = require("./utils/utils");
-const { uploadFile, sendMemo, sendTag } = require("./utils/api");
+const { uploadFile, sendMemo, setMemoResources } = require("./utils/api");
 
 fs.removeSync("./memo.json");
 fs.removeSync("./sendedIds.json");
 
-const sendedMemoIds = [];
+const sendedMemoNames = [];
 const memoArr = [];
 
 const $ = cheerio.load(fs.readFileSync(htmlPath, "utf8"));
@@ -75,7 +75,7 @@ async function uploadFileHandler() {
     }
 
     await mergePromise(uploadFilePromiseArr).then((res) => {
-      memo.resourceIdList = res.map((item) => item.data?.id || item?.id);
+      memo.resources = [...memo.resources || [], ...res];
     });
   }
 
@@ -87,35 +87,31 @@ async function sendMemoHandler() {
 
   fs.writeJSONSync("./memo.json", memoArr);
 
+  
   for (const memo of memoArr) {
+    let content = memo.content;
+
+    memo.tags.forEach((tag) => {
+      content += ` #${tag}`;
+    })
+
+
     sendMemoPromiseArr.unshift(async () => {
       try {
         return await sendMemo({
           content: memo.content,
-          resourceIdList: memo.resourceIdList,
           createdTs: new Date(memo.time).getTime() / 1000,
-        }).then((res) => {
-          console.log(chalk.green("success"), res?.data?.content || res?.data?.data?.content);
-          sendedMemoIds.push(res?.data?.id || res?.data?.data?.id);
+        }).then(async (res) => {
+          sendedMemoNames.push(res?.data?.name || res?.data?.data?.name);
 
-          fs.writeJSONSync("./sendedIds.json", sendedMemoIds);
+          await setMemoResources(res?.data?.name, memo.resources);
+
+          fs.writeJSONSync("./sendedIds.json", sendedMemoNames);
         });
       } catch (error) {
         errorTip(error);
       }
     });
-
-    if (memo.tags.length) {
-      memo.tags.forEach((tag) => {
-        sendMemoPromiseArr.unshift(async () => {
-          try {
-            return await sendTag(tag);
-          } catch (error) {
-            errorTip(error);
-          }
-        });
-      });
-    }
   }
 
   await mergePromise(sendMemoPromiseArr);
