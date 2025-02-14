@@ -24,10 +24,10 @@ exports.uploadFile = async (filePath) => {
     data: {
       content: readFile.toString("base64"),
       filename: path.basename(filePath),
-      type: mime.getType(filePath) || undefined
+      type: mime.getType(filePath) || undefined,
     },
     headers: default_header,
-  }).then((res) => res.data)
+  }).then((res) => res.data);
 };
 
 exports.sendMemo = async (memo) => {
@@ -43,6 +43,18 @@ exports.sendMemo = async (memo) => {
     await new Promise((resolve) => setTimeout(resolve, SLEEP));
 
     return res;
+  });
+};
+
+exports.updateMemo = async (memoName, createTime) => {
+  return axios({
+    method: "patch",
+    url: getRequestUrl(`/api${getVersion()}/${memoName}`),
+    data: { createTime },
+    headers: {
+      ...default_header,
+      "Content-Type": "application/json; charset=UTF-8",
+    },
   });
 };
 

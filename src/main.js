@@ -4,7 +4,7 @@ var TurndownService = require("turndown");
 const chalk = require("chalk");
 
 const { htmlPath, getFilePath, mergePromise, errorTip } = require("./utils/utils");
-const { uploadFile, sendMemo, setMemoResources } = require("./utils/api");
+const { uploadFile, sendMemo, updateMemo, setMemoResources } = require("./utils/api");
 
 fs.removeSync("./memo.json");
 fs.removeSync("./sendedIds.json");
@@ -37,7 +37,7 @@ for (const memo of memos) {
   const tagReg = /#(\S*)/g;
   const tagMatch = content.match(tagReg);
   if (tagMatch) {
-    tags = tagMatch.map((item) => item.replace("#", "")).filter(tag => !!tag);
+    tags = tagMatch.map((item) => item.replace("#", "")).filter((tag) => !!tag);
   }
 
   $(memo)
@@ -75,7 +75,7 @@ async function uploadFileHandler() {
     }
 
     await mergePromise(uploadFilePromiseArr).then((res) => {
-      memo.resources = [...memo.resources || [], ...res];
+      memo.resources = [...(memo.resources || []), ...res];
     });
   }
 
@@ -87,34 +87,46 @@ async function sendMemoHandler() {
 
   fs.writeJSONSync("./memo.json", memoArr);
 
-  
+  console.log(chalk.green("======================= 发送 Memo ======================="));
+  console.log(chalk.blue(`总计待发送: ${memoArr.length} 条`));
+
+  let currentCount = 0;
+  const totalCount = memoArr.length;
+
   for (const memo of memoArr) {
     let content = memo.content;
 
     memo.tags.forEach((tag) => {
       content += ` #${tag}`;
-    })
-
+    });
 
     sendMemoPromiseArr.unshift(async () => {
       try {
+        currentCount++;
+        console.log(chalk.yellow(`正在发送 [${currentCount}/${totalCount}]`));
         return await sendMemo({
           content: memo.content,
-          createdTs: new Date(memo.time).getTime() / 1000,
+          // createdTs: new Date(memo.time).getTime() / 1000,
         }).then(async (res) => {
           sendedMemoNames.push(res?.data?.name || res?.data?.data?.name);
 
+          await updateMemo(res?.data?.name, new Date(memo.time).toISOString());
+
           await setMemoResources(res?.data?.name, memo.resources);
+
+          console.log(chalk.green(`发送成功 [${currentCount}/${totalCount}]`));
 
           fs.writeJSONSync("./sendedIds.json", sendedMemoNames);
         });
       } catch (error) {
+        console.log(chalk.red(`发送失败 [${currentCount}/${totalCount}]`));
         errorTip(error);
       }
     });
   }
 
   await mergePromise(sendMemoPromiseArr);
+  console.log(chalk.green("======================= 发送 Memo 完成 ======================="));
 }
 
 uploadFileHandler().then(sendMemoHandler);
