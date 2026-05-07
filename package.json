@@ -4,8 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "run": "node ./src/weixin.js http://localhost:5230/api/memo?openId=8deb3079-055b-48a1-a1e4-499ce493fa0c ./weixin.txt",
-    "lint": "eslint ."
+    "run": "node ./src/weixin.js http://localhost:5230/api/v1 YOUR_ACCESS_TOKEN ./weixin.txt",
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint .",
+    "test": "node --test tests/*.test.js",
+    "web": "node ./src/server/index.js"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +20,8 @@
     "fs-extra": "^11.1.0",
     "mime": "^3.0.0",
     "turndown": "^7.1.2",
-    "url-parse": "^1.5.10"
+    "url-parse": "^1.5.10",
+    "busboy": "^1.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

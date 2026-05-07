@@ -2,12 +2,11 @@ const fs = require("fs-extra");
 const path = require("path");
 const mime = require("mime");
 const axios = require("axios");
-const FormData = require("form-data");
 const { getRequestUrl, getAccessToken, openApi } = require("./utils");
 
 const SLEEP = 1000;
 
-default_header = {
+const defaultHeader = {
   Authorization: `Bearer ${getAccessToken()}`,
 };
 const getVersion = () => {
@@ -27,7 +26,7 @@ exports.uploadAttachment = async (filePath, memoName) => {
       type: mime.getType(filePath) || undefined,
       memo: memoName,
     },
-    headers: default_header,
+    headers: defaultHeader,
   }).then((res) => res.data);
 };
 
@@ -37,7 +36,7 @@ exports.sendMemo = async (memo) => {
     url: getRequestUrl(`/api${getVersion()}/memos`),
     data: memo,
     headers: {
-      ...default_header,
+      ...defaultHeader,
       "Content-Type": "application/json; charset=UTF-8",
     },
   }).then(async (res) => {
@@ -53,7 +52,7 @@ exports.updateMemo = async (memoName, createTime) => {
     url: getRequestUrl(`/api${getVersion()}/${memoName}`),
     data: { createTime },
     headers: {
-      ...default_header,
+      ...defaultHeader,
       "Content-Type": "application/json; charset=UTF-8",
     },
   });
@@ -67,7 +66,7 @@ exports.setMemoResources = async (memoName, resources) => {
       resources: resources,
     },
     headers: {
-      ...default_header,
+      ...defaultHeader,
       "Content-Type": "application/json; charset=UTF-8",
     },
   };
@@ -80,7 +79,7 @@ exports.deleteMemo = async (memoName) => {
     method: "delete",
     url: getRequestUrl(`/api${getVersion()}/${memoName}`),
     headers: {
-      ...default_header,
+      ...defaultHeader,
       "Content-Type": "application/json; charset=UTF-8",
     },
   });

@@ -1,90 +1,25 @@
-const fs = require("fs-extra");
-const chalk = require("chalk");
+const { importWeixin } = require("./core/importWeixin");
 
-const { htmlPath, getFilePath, mergePromise, errorTip } = require("./utils/utils");
-const { sendMemo } = require("./utils/api");
+const [, , openApi, accessToken, txtPath] = process.argv;
 
-fs.removeSync("./sendedIds.json");
-
-const contentParse = {
-  bookInfo: [],
-  chapterInfo: [],
-};
-
-const fullPath = getFilePath(htmlPath);
-
-const fileContent = fs.readFileSync(fullPath, "utf8");
-
-const fileContentArr = fileContent.split("\n");
-
-let curContent = [];
-let curChapterTitle = "";
-for (const index in fileContentArr) {
-  const line = fileContentArr[index];
-
-  if (line.length && line.startsWith("◆ ")) {
-    curChapterTitle = line;
-  } else {
-    curContent.push(line);
-  }
-
-  if (!line.length && !fileContentArr[index - 1].length) {
-    if (!contentParse.bookInfo.length) {
-      contentParse.bookInfo = curContent;
-    } else {
-      contentParse.chapterInfo.push({
-        title: curChapterTitle,
-        content: curContent,
-      });
-    }
-
-    curContent = [];
-  }
+if (!openApi || !accessToken || !txtPath) {
+  console.error("Usage: node ./src/weixin.js <your-api-host> <your-access-token> <txt-path>");
+  process.exit(1);
 }
 
-// fs.writeJsonSync("./content.json", contentParse);
-
-const bookname = contentParse.bookInfo[0].replaceAll("《", "").replaceAll("》", "");
-const tag = `#微信读书/${bookname}`;
-
-const sendMemoPromiseArr = [];
-
-for (const chapter of contentParse.chapterInfo) {
-  if (chapter.title.includes("◆  点评")) continue;
-
-  const chapterTitle = chapter.title.replace("◆ ", "").trim();
-
-  let curContent = [];
-  for (const index in chapter.content) {
-    const line = chapter.content[index];
-
-    if (line.length) {
-      curContent.push(line.replaceAll(">>", ">"));
-    } else {
-      if (curContent.length) {
-        const content = curContent.join("\n");
-        sendMemoPromiseArr.push(async () => {
-          try {
-            return await sendMemo({
-              content: `${content}\n\n章节: ${chapterTitle}\n\n${tag}`,
-            }).then((res) => {
-              console.log(chalk.green("success"), res.data.content);
-              return res;
-            });
-          } catch (error) {
-            errorTip(error);
-          }
-        });
-      }
-
-      curContent = [];
-    }
-  }
-}
-
-let sendedMemoNames = [];
-mergePromise(sendMemoPromiseArr).then((res) => {
-  sendedMemoNames = res.map((item) => item.data.name);
-
-  fs.writeJSONSync("./sendedIds.json", sendedMemoNames);
-});
+importWeixin({
+  openApi,
+  accessToken,
+  txtPath,
+  onEvent(event) {
+    const payload = event.data ? ` ${JSON.stringify(event.data)}` : "";
+    console.log(`[${event.type}] ${event.message}${payload}`);
+  },
+})
+  .then((result) => {
+    console.log("Weixin import summary:", result);
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

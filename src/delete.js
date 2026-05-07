@@ -1,12 +1,24 @@
-const path = require("path");
-const fs = require("fs-extra");
-const { deleteMemo } = require("./utils/api");
+const { deleteImported } = require("./core/deleteImported");
 
-const idsFilePath = path.join(process.cwd(), "sendedIds.json");
-const ids = fs.readJSONSync(idsFilePath);
+const [, , openApi, accessToken] = process.argv;
 
-for (const id of ids) {
-  deleteMemo(id).then(() => {
-    console.log("delete success", id);
-  });
+if (!openApi || !accessToken) {
+  console.error("Usage: node ./src/delete.js <your-api-host> <your-access-token>");
+  process.exit(1);
 }
+
+deleteImported({
+  openApi,
+  accessToken,
+  onEvent(event) {
+    const payload = event.data ? ` ${JSON.stringify(event.data)}` : "";
+    console.log(`[${event.type}] ${event.message}${payload}`);
+  },
+})
+  .then((result) => {
+    console.log("Delete summary:", result);
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

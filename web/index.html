@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memos 导入控制台</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>Memos 导入控制台</h1>
+        <p>通过可视化页面执行 Flomo / 微信读书导入与删除任务，并实时查看日志。</p>
+      </header>
+
+      <section class="panel">
+        <h2>会话配置</h2>
+        <div class="field-grid">
+          <label>
+            API 地址
+            <input id="openApi" placeholder="http://localhost:5230/api/v1" />
+          </label>
+          <label>
+            访问令牌
+            <input id="accessToken" type="password" placeholder="token" />
+          </label>
+        </div>
+        <button id="saveSession">保存会话</button>
+      </section>
+
+      <section class="panel">
+        <h2>任务</h2>
+        <div class="job-group">
+          <label>
+            Flomo 导出文件夹
+            <input id="flomoFolder" type="file" webkitdirectory directory multiple />
+          </label>
+          <button id="runFlomo">执行 Flomo 导入</button>
+        </div>
+        <div class="job-group">
+          <label>
+            高级（可选）：Flomo 文件路径
+            <input id="htmlPath" placeholder="./flomo/index.html" />
+          </label>
+          <span></span>
+        </div>
+
+        <div class="job-group">
+          <label>
+            微信读书 TXT 文件
+            <input id="weixinFile" type="file" accept=".txt" />
+          </label>
+          <button id="runWeixin">执行微信读书导入</button>
+        </div>
+        <div class="job-group">
+          <label>
+            高级（可选）：微信读书文件路径
+            <input id="txtPath" value="./weixin.txt" />
+          </label>
+          <span></span>
+        </div>
+
+        <div class="job-group">
+          <button id="runDelete" class="danger">删除已导入 Memo</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>状态</h2>
+        <pre id="status">空闲</pre>
+      </section>
+
+      <section class="panel">
+        <h2>实时日志</h2>
+        <pre id="logs"></pre>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

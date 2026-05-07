@@ -7,6 +7,42 @@
 
 最好使用 memo@0.10.4 以上版本，因为之前的版本不支持设置创建时间的功能。
 
+# Web 控制台（可视化）
+
+如果你不想手动执行命令行，可以使用内置 Web 控制台完成导入和删除。
+
+## 启动
+
+```bash
+pnpm install
+pnpm web
+```
+
+启动后访问：
+
+```text
+http://127.0.0.1:3131
+```
+
+## 页面操作步骤
+
+1. 在 `Session` 区域填写：
+   - `API Host`（例如 `http://localhost:5230/api/v1` 或 `http://localhost:5230/api/v2`）
+   - `Access Token`
+   点击 `Save Session`。
+2. 选择任务并执行：
+   - Flomo：优先在页面直接选择 flomo 导出文件夹（包含 `index.html` 和 `file/` 资源目录），然后点击 `执行 Flomo 导入`
+   - 微信读书：优先在页面直接选择 TXT 文件，然后点击 `执行微信读书导入`
+   - 如需兼容旧流程，可在“高级（可选）”里填写本地路径（例如 `./flomo/index.html`、`./weixin.txt`）
+   - 删除已导入数据：点击 `删除已导入 Memo`
+3. 在 `Live Logs` 观察实时日志，在 `Status` 查看任务状态。
+
+## 说明
+
+- 当前仅支持单任务串行执行，运行中再次启动任务会返回冲突提示。
+- 会话凭据只保存在服务进程内存中，页面刷新或服务重启后需要重新填写。
+- 删除逻辑依赖 `sendedIds.json`，默认存放在系统临时目录 `memos-import-artifacts`（可通过 `MEMOS_ARTIFACT_DIR` 覆盖）。
+
 # flomo
 
 ## 导出 flomo 数据
@@ -48,7 +84,7 @@ node ./src/main.js <your-api-host> <your-access-token> ./flomo/index.html
 
 > 删除同步数据仅支持删除脚本创建的内容，创建的 tag 请手动删除，因为无法确认 tag 是否有被其他内容使用。
 
-执行完同步数据后如果不符合预期，可以执行下面的命令删除同步的数据。删除会读取同步完成写入到 `sendedIds.json` 文件数据，所以需要保证这个文件存在。
+执行完同步数据后如果不符合预期，可以执行下面的命令删除同步的数据。删除会读取同步完成写入的 `sendedIds.json`，默认路径为系统临时目录 `memos-import-artifacts`（可通过 `MEMOS_ARTIFACT_DIR` 覆盖）。
 
 ```bash
 node ./src/delete.js <your-api-host> <your-access-token>
