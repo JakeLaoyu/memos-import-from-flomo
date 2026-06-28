@@ -21,7 +21,7 @@
     "url-parse": "^1.5.10"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.12",
+    "@babel/core": "^7.29.6",
     "@babel/eslint-parser": "^7.19.1",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0"
